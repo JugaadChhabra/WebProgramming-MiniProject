@@ -1,62 +1,101 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta viewport="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Snake Game</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
     <style>
-        body {
+        body,
+        html {
+            font-family: 'Fredoka One', cursive;
+            margin: 0;
+            padding-top: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            background-color: #f5f5dc;
+            /* Soft cream background from homePage.html */
+            color: #6A0DAD;
+            /* Violet text color for contrast */
             height: 100vh;
-            background-color: #333;
-            color: white;
-            font-family: 'Fredoka One', cursive;
-            margin: 0;
         }
+
+        #gameHeader {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 500px;
+            /* Adjust to match the canvas width */
+            padding: 10px;
+            margin-bottom: 20px;
+            background-color: #f5f5dc;
+            /* Soft cream background for header area */
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            /* Subtle shadow for depth */
+        }
+
+        #timer,
+        #score {
+            font-size: 20px;
+            color: #6A0DAD;
+            /* Violet to match the button colors */
+        }
+
+
         canvas {
-            background-color: #4D774E;
+            border: 2px solid #6A0DAD;
+            /* Violet border to highlight the canvas area */
+            background-color: #eae7dc;
+            /* Lighter cream for the canvas background, ensuring good contrast */
             margin-bottom: 10px;
         }
+
         #buttonContainer {
             display: flex;
             justify-content: center;
         }
+
         button {
-            font-family: 'Fredoka One', cursive;
+            padding: 10px 20px;
             font-size: 16px;
-            margin: 5px;
-            background-color: #556B2F;
+            background-color: #6A0DAD;
+            /* Violet, matching homePage */
             color: white;
             border: none;
-            padding: 10px 20px;
             cursor: pointer;
-            outline: none;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 4px #49097E;
+            /* Darker violet for shadow, from homePage */
+            transition: background-color 0.3s, transform 0.2s;
         }
+
         button:hover {
-            background-color: #6B8E23;
-        }
-        button:active {
-            background-color: #8FBC8F;
-        }
-        #timer, #score {
-            margin-top: 10px;
-            color: white;
+            background-color: #7B1AF2;
+            /* Lighter violet on hover, from homePage */
+            box-shadow: 0 2px #5C0B8B;
+            transform: translateY(2px);
         }
     </style>
 </head>
+
 <body>
+    <div id="gameHeader">
+        <div id="timer">Time: 60s</div>
+        <div id="score">Score: 0</div>
+    </div>
     <canvas id="snakeCanvas" width="500" height="500"></canvas>
     <div id="buttonContainer">
         <button onclick="startGame()">Play</button>
         <button onclick="pauseGame()">Pause</button>
         <button onclick="resumeGame()">Resume</button>
     </div>
-    <div id="timer">Time: 60s</div>
-    <div id="score">Score: 0</div>
+
+
 
     <script>
         const canvas = document.getElementById('snakeCanvas');
@@ -73,10 +112,11 @@
         function createBoard() {
             for (let i = 0; i < 20; i++) {
                 for (let j = 0; j < 20; j++) {
+                    // Updated color scheme for board
                     if ((i + j) % 2 == 0) {
-                        ctx.fillStyle = '#4D774E';
+                        ctx.fillStyle = '#D4E157'; // Lighter green for one set of squares
                     } else {
-                        ctx.fillStyle = '#145214';
+                        ctx.fillStyle = '#C0CA33'; // Slightly darker green for contrast
                     }
                     ctx.fillRect(j * box, i * box, box, box);
                 }
@@ -84,16 +124,16 @@
         }
 
         function drawFood() {
-            ctx.fillStyle = "red";
+            ctx.fillStyle = "#FF7043"; // A contrasting color for food
             ctx.fillRect(food.x, food.y, box, box);
         }
 
         function drawSnake() {
             for (let i = 0; i < snake.length; i++) {
-                ctx.fillStyle = (i === 0) ? "yellow" : "yellow";
+                ctx.fillStyle = (i === 0) ? "black" : "black"; // Head and body in black for contrast
                 ctx.fillRect(snake[i].x, snake[i].y, box, box);
 
-                ctx.strokeStyle = '#333';
+                ctx.strokeStyle = 'white';
                 ctx.strokeRect(snake[i].x, snake[i].y, box, box);
             }
         }
@@ -109,7 +149,6 @@
                 direction = "DOWN";
             }
         }
-
         function moveSnake() {
             let snakeX = snake[0].x;
             let snakeY = snake[0].y;
@@ -118,6 +157,19 @@
             if (direction == "UP") snakeY -= box;
             if (direction == "RIGHT") snakeX += box;
             if (direction == "DOWN") snakeY += box;
+
+            // Wrap snake position when it goes off canvas
+            if (snakeX < 0) {
+                snakeX = canvas.width - box;
+            } else if (snakeX >= canvas.width) {
+                snakeX = 0;
+            }
+
+            if (snakeY < 0) {
+                snakeY = canvas.height - box;
+            } else if (snakeY >= canvas.height) {
+                snakeY = 0;
+            }
 
             let newHead = {
                 x: snakeX,
@@ -136,19 +188,12 @@
             if (snakeX === food.x && snakeY === food.y) {
                 score += 10; // Increase score
                 document.getElementById('score').textContent = `Score: ${score}`; // Update score display
-                timeLeft += 10; // Add more time each time the snake eats food
                 createFood();
             } else {
                 snake.pop();
             }
-
-            // Check collision with the walls
-            if (snakeX < 0 || snakeY < 0 || snakeX >= canvas.width || snakeY >= canvas.height) {
-                endGame();
-                return;
-            }
         }
-
+        
         function createFood() {
             food = {
                 x: Math.floor(Math.random() * 20) * box,
@@ -164,7 +209,7 @@
         }
 
         function startGame() {
-            snake = [{x: 9 * box, y: 10 * box}];
+            snake = [{ x: 9 * box, y: 10 * box }];
             direction = null;
             score = 0;
             timeLeft = 60;
@@ -204,4 +249,5 @@
         }
     </script>
 </body>
+
 </html>
