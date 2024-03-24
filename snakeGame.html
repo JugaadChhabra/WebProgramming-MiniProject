@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta viewport="width=device-width, initial-scale=1.0">
+    <title>Snake Game</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #333;
+            color: white;
+            font-family: 'Fredoka One', cursive;
+            margin: 0;
+        }
+        canvas {
+            background-color: #4D774E;
+            margin-bottom: 10px;
+        }
+        #buttonContainer {
+            display: flex;
+            justify-content: center;
+        }
+        button {
+            font-family: 'Fredoka One', cursive;
+            font-size: 16px;
+            margin: 5px;
+            background-color: #556B2F;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            outline: none;
+        }
+        button:hover {
+            background-color: #6B8E23;
+        }
+        button:active {
+            background-color: #8FBC8F;
+        }
+        #timer, #score {
+            margin-top: 10px;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="snakeCanvas" width="500" height="500"></canvas>
+    <div id="buttonContainer">
+        <button onclick="startGame()">Play</button>
+        <button onclick="pauseGame()">Pause</button>
+        <button onclick="resumeGame()">Resume</button>
+    </div>
+    <div id="timer">Time: 60s</div>
+    <div id="score">Score: 0</div>
+
+    <script>
+        const canvas = document.getElementById('snakeCanvas');
+        const ctx = canvas.getContext('2d');
+        const box = 25; // Size of each square
+        let snake = [];
+        let food = {};
+        let direction;
+        let gameInterval;
+        let timerInterval;
+        let timeLeft = 60; // Countdown starting time in seconds
+        let score = 0;
+
+        function createBoard() {
+            for (let i = 0; i < 20; i++) {
+                for (let j = 0; j < 20; j++) {
+                    if ((i + j) % 2 == 0) {
+                        ctx.fillStyle = '#4D774E';
+                    } else {
+                        ctx.fillStyle = '#145214';
+                    }
+                    ctx.fillRect(j * box, i * box, box, box);
+                }
+            }
+        }
+
+        function drawFood() {
+            ctx.fillStyle = "red";
+            ctx.fillRect(food.x, food.y, box, box);
+        }
+
+        function drawSnake() {
+            for (let i = 0; i < snake.length; i++) {
+                ctx.fillStyle = (i === 0) ? "yellow" : "yellow";
+                ctx.fillRect(snake[i].x, snake[i].y, box, box);
+
+                ctx.strokeStyle = '#333';
+                ctx.strokeRect(snake[i].x, snake[i].y, box, box);
+            }
+        }
+
+        function directionChange(event) {
+            if (event.keyCode == 37 && direction != "RIGHT") {
+                direction = "LEFT";
+            } else if (event.keyCode == 38 && direction != "DOWN") {
+                direction = "UP";
+            } else if (event.keyCode == 39 && direction != "LEFT") {
+                direction = "RIGHT";
+            } else if (event.keyCode == 40 && direction != "UP") {
+                direction = "DOWN";
+            }
+        }
+
+        function moveSnake() {
+            let snakeX = snake[0].x;
+            let snakeY = snake[0].y;
+
+            if (direction == "LEFT") snakeX -= box;
+            if (direction == "UP") snakeY -= box;
+            if (direction == "RIGHT") snakeX += box;
+            if (direction == "DOWN") snakeY += box;
+
+            let newHead = {
+                x: snakeX,
+                y: snakeY
+            };
+
+            // Check collision with the snake's body
+            for (let i = 1; i < snake.length; i++) {
+                if (snake[i].x === newHead.x && snake[i].y === newHead.y) {
+                    endGame();
+                    return;
+                }
+            }
+
+            snake.unshift(newHead);
+            if (snakeX === food.x && snakeY === food.y) {
+                score += 10; // Increase score
+                document.getElementById('score').textContent = `Score: ${score}`; // Update score display
+                timeLeft += 10; // Add more time each time the snake eats food
+                createFood();
+            } else {
+                snake.pop();
+            }
+
+            // Check collision with the walls
+            if (snakeX < 0 || snakeY < 0 || snakeX >= canvas.width || snakeY >= canvas.height) {
+                endGame();
+                return;
+            }
+        }
+
+        function createFood() {
+            food = {
+                x: Math.floor(Math.random() * 20) * box,
+                y: Math.floor(Math.random() * 20) * box
+            };
+        }
+
+        function updateGame() {
+            createBoard();
+            drawFood();
+            drawSnake();
+            moveSnake();
+        }
+
+        function startGame() {
+            snake = [{x: 9 * box, y: 10 * box}];
+            direction = null;
+            score = 0;
+            timeLeft = 60;
+            document.getElementById('score').textContent = 'Score: 0';
+            document.getElementById('timer').textContent = 'Time: 60s';
+            createFood();
+            if (gameInterval) clearInterval(gameInterval);
+            gameInterval = setInterval(updateGame, 100);
+            window.addEventListener('keydown', directionChange);
+            if (timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(updateTimer, 1000);
+        }
+
+        function pauseGame() {
+            clearInterval(gameInterval);
+            clearInterval(timerInterval);
+        }
+
+        function resumeGame() {
+            gameInterval = setInterval(updateGame, 100);
+            timerInterval = setInterval(updateTimer, 1000);
+        }
+
+        function updateTimer() {
+            if (timeLeft > 0) {
+                timeLeft--;
+                document.getElementById('timer').textContent = `Time: ${timeLeft}s`;
+            } else {
+                endGame();
+            }
+        }
+
+        function endGame() {
+            clearInterval(gameInterval);
+            clearInterval(timerInterval);
+            alert("Game Over! Your score: " + score);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complementary Colors</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f5f5dc; /* Soft cream background */
+        }
+        .image-container {
+            position: relative;
+            display: inline-block;
+            text-align: center;
+        }
+        .image-container img {
+            display: block;
+            max-width: 80%; /* Adjust based on your preference */
+            max-height: 80vh;
+            width: auto;
+            height: auto;
+            margin: auto;
+            border-radius: 10px;
+        }
+        .image-container .buttons {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-350%, -50%);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .button, a.button { /* Apply styles to both <button> and <a> with class .button */
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #6A0DAD; /* Complementary violet */
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            text-align: center;
+            text-decoration: none; /* Removes underline from <a> tags */
+            display: inline-block; /* Ensures <a> tags behave like buttons */
+            box-shadow: 0 4px #49097E; /* Darker shade for shadow */
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        .button:hover, a.button:hover {
+            background-color: #7B1AF2; /* Lighter violet on hover */
+            box-shadow: 0 2px #5C0B8B; /* Adjusted shadow color */
+            transform: translateY(2px);
+        }
+    </style>
+</head>
+<body>
+
+<div class="image-container">
+    <img src="img.png" alt="Centered Image with Overlay Buttons">
+    <div class="buttons">
+        <a href="snakeGame.html" class="button">Play</a> <!-- Changed to an <a> tag for redirection -->
+        <button type="button" class="button">Settings</button>
+        <button type="button" class="button">Leaderboard</button>
+    </div>
+</div>
+
+</body>
+</html>
