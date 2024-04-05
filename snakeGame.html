@@ -80,6 +80,30 @@
             box-shadow: 0 2px #5C0B8B;
             transform: translateY(2px);
         }
+
+        .popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            /* Ensure it's above other content */
+            display: none;
+            /* Hidden by default */
+        }
+
+        .popup.show {
+            display: block;
+            /* Show the popup */
+        }
+
+        .popup h2 {
+            margin-top: 0;
+        }
     </style>
 </head>
 
@@ -94,9 +118,7 @@
         <button onclick="pauseGame()">Pause</button>
         <button onclick="resumeGame()">Resume</button>
     </div>
-
-
-
+    <div id="popupContainer"></div>
     <script>
         const canvas = document.getElementById('snakeCanvas');
         const ctx = canvas.getContext('2d');
@@ -180,6 +202,7 @@
             for (let i = 1; i < snake.length; i++) {
                 if (snake[i].x === newHead.x && snake[i].y === newHead.y) {
                     endGame();
+                    showPopup("Oops! You hit yourself. Game Over.");
                     return;
                 }
             }
@@ -193,7 +216,7 @@
                 snake.pop();
             }
         }
-        
+
         function createFood() {
             food = {
                 x: Math.floor(Math.random() * 20) * box,
@@ -239,14 +262,31 @@
                 document.getElementById('timer').textContent = `Time: ${timeLeft}s`;
             } else {
                 endGame();
+                showPopup("Time's up! Game Over.");
             }
         }
 
         function endGame() {
             clearInterval(gameInterval);
             clearInterval(timerInterval);
-            alert("Game Over! Your score: " + score);
+            // alert("Game Over! Your score: " + score);
         }
+
+        function showPopup(message) {
+            const popupContainer = document.getElementById('popupContainer');
+            popupContainer.innerHTML = `
+        <div class="popup show">
+            <h2>${message}</h2>
+            <button onclick="hidePopup()">OK</button>
+        </div>
+    `;
+        }
+
+        function hidePopup() {
+            const popupContainer = document.getElementById('popupContainer');
+            popupContainer.innerHTML = ''; // Clear the popup content
+        }
+
     </script>
 </body>
 

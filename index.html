@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My CV</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding-top: 80px; 
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: #333;
+            color: white;
+            display: flex;
+            justify-content: flex-start; 
+            align-items: center;
+            padding: 10px 20px; 
+            z-index: 1001; 
+        }
+        header img {
+            height: 80px;
+            width: auto;
+        }
+        .title-container h1, 
+        .title-container h2 {
+            margin: 0;
+            padding-left: 10px;
+        }
+        nav {
+            position: fixed;
+            top: 100px; 
+            left: 0;
+            right: 0;
+            background-color: #333;
+            color: white;
+            padding: 0.5rem 0;
+            text-align: center;
+            z-index: 1000; 
+        }
+        nav a {
+            color: white;
+            margin: 0 15px;
+            text-decoration: none;
+            font-size: 1.1rem;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        main {
+            flex: 1;
+            padding: 1rem;
+            margin-top: 4.5rem; 
+            box-sizing: border-box;
+        }
+        footer {
+            background-color: #333;
+            color: white;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 1rem 0;
+            text-align: center;
+            z-index: 1000;
+        }
+        footer p {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="university.png" alt="University Logo"/>
+        <div class="title-container">
+            <h1>B.TECH. COMPUTER ENGINEERING |</h1>
+            <h2>Name: Divit Prasad</h2>
+        </div>
+    </header>
+    <nav>
+        <a href="index.html">Home</a> |
+        <a href="registration.html">Registration</a> |
+        <a href="contact.html">Contact Us</a>
+    </nav>
+    <main>
+        <p style="font-family: 'Comic Sans MS', cursive;">website in development</p>
+        <a href="cat.png">
+            <img src="cat.png" alt="Cat Image" style="max-width:100%;height:auto;"/>
+        </a>
+    </main>
+    <footer>
+        <p>&copy; 2023 Divit website under development</p>
+    </footer>
+</body>
+</html>
+    
